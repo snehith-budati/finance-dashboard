@@ -1,7 +1,10 @@
 package com.finance.controller;
 
 import com.finance.entity.User;
+import com.finance.service.AuthorizationService;
 import com.finance.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,40 +15,50 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthorizationService authorizationService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthorizationService authorizationService) {
         this.userService = userService;
+        this.authorizationService = authorizationService;
     }
 
-    // Get all users
+    @PostMapping("/bootstrap-admin")
+    public ResponseEntity<User> bootstrapAdmin(@Valid @RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.bootstrapAdmin(user));
+    }
+
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers(@RequestHeader("X-User-Id") Long actorUserId) {
+        authorizationService.requireAdmin(actorUserId);
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Get user by ID
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+    public ResponseEntity<User> getUserById(@RequestHeader("X-User-Id") Long actorUserId, @PathVariable Long id) {
+        authorizationService.requireAdmin(actorUserId);
         return userService.getUserById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Create a user
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<User> createUser(@RequestHeader("X-User-Id") Long actorUserId, @Valid @RequestBody User user) {
+        authorizationService.requireAdmin(actorUserId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
-    // Update user
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+    public ResponseEntity<User> updateUser(
+            @RequestHeader("X-User-Id") Long actorUserId,
+            @PathVariable Long id,
+            @Valid @RequestBody User updatedUser) {
+        authorizationService.requireAdmin(actorUserId);
         return ResponseEntity.ok(userService.updateUser(id, updatedUser));
     }
 
-    // Delete user
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@RequestHeader("X-User-Id") Long actorUserId, @PathVariable Long id) {
+        authorizationService.requireAdmin(actorUserId);
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

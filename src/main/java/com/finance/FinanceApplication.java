@@ -8,6 +8,6 @@ public class FinanceApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FinanceApplication.class, args);
-        System.out.println("✅ Finance Dashboard Backend is running on [localhost](http://localhost:8080)");
+        System.out.println("Finance Dashboard Backend is running on http://localhost:8080");
     }
 }

@@ -3,6 +3,7 @@ package com.finance.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -18,10 +19,12 @@ public class User {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank
     @Email
     @Column(unique = true, nullable = false)
     private String email;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;

@@ -19,8 +19,8 @@ public class FinancialRecord {
     private BigDecimal amount;
 
     @NotBlank
-    @Pattern(regexp = "^(INCOME|EXPENSE)$")
-    private String type; // INCOME or EXPENSE
+    @Pattern(regexp = "^(INCOME|EXPENSE)$", message = "Type must be INCOME or EXPENSE")
+    private String type;
 
     @NotBlank
     private String category;
@@ -28,6 +28,7 @@ public class FinancialRecord {
     @NotNull
     private LocalDate date;
 
+    @Size(max = 255)
     private String notes;
 
     public FinancialRecord() {
