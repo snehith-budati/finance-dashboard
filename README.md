@@ -74,11 +74,11 @@ A Spring Boot REST API for financial management with user roles and transaction 
 
 {
 
-&#x20; "totalIncome": 5000.00,
+"totalIncome": 5000.00,
 
-&#x20; "totalExpenses": 1200.00,
+"totalExpenses": 1200.00,
 
-&#x20; "netBalance": 3800.00
+"netBalance": 3800.00
 
 }
 
